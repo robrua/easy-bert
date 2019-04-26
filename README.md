@@ -1,4 +1,5 @@
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/robrua/easy-bert/blob/master/LICENSE.txt)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2651822.svg)](https://doi.org/10.5281/zenodo.2651822)
 
 # easy-bert
 easy-bert is a dead simple API for using Google's high quality [BERT](https://github.com/google-research/bert) language model.
