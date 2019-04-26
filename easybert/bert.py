@@ -56,7 +56,8 @@ import numpy as np
 
 _DEFAULT_MAX_SEQUENCE_LENGTH = 128  # Max number of BERT tokens in a sequence
 _DEFAULT_PER_TOKEN_EMBEDDING = False  # Whether to return per-token embeddings or pooled embeddings for the full sequences
-_SOURCE_MODEL_ASSET_FILE = "source-model.txt"  # The asset file in the saved model used to store the source tf-hub model URL
+_TOKENIZER_PARAMS_FILE = "tokenizer.txt"  # The asset file in the saved model used to store the parameters for the tokenizer
+_VOCAB_FILE = "vocab.txt"  # The asset file in the saved model that stores the vocabulary for the tokenizer
 
 
 class Bert(object):
@@ -68,7 +69,6 @@ class Bert(object):
         max_sequence_length (int): the maximum number of BERT tokens allowed in an input sequence
     """
     def __init__(self, tf_hub_url: str, max_sequence_length: int = _DEFAULT_MAX_SEQUENCE_LENGTH) -> None:
-        self._source_model = tf_hub_url
         self._graph = tf.Graph()
         self._session = None
 
@@ -79,8 +79,8 @@ class Bert(object):
 
             # Get the tokenizer from the module
             tokenization_info = bert_module(signature="tokenization_info", as_dict=True)
-            vocab_file, do_lower_case = session.run([tokenization_info["vocab_file"], tokenization_info["do_lower_case"]])
-            self._tokenizer = FullTokenizer(vocab_file=vocab_file, do_lower_case=do_lower_case)
+            self._vocab_file, self._do_lower_case = session.run([tokenization_info["vocab_file"], tokenization_info["do_lower_case"]])
+            self._tokenizer = FullTokenizer(vocab_file=self._vocab_file, do_lower_case=self._do_lower_case)
 
             # Create symbolic input tensors as inputs to the model
             self._input_ids = tf.placeholder(name="input_ids", shape=(None, max_sequence_length), dtype=tf.int32)
@@ -180,8 +180,8 @@ class Bert(object):
                 }, outputs=self._outputs)
 
         # Save needed information to get the tokenizer when reloading
-        with path.joinpath("assets", _SOURCE_MODEL_ASSET_FILE).open("w", encoding="UTF-8") as out_file:
-            out_file.write("{}\n".format(self._source_model))
+        with path.joinpath("assets", _TOKENIZER_PARAMS_FILE).open("w", encoding="UTF-8") as out_file:
+            out_file.write("{}\n".format(self._do_lower_case))
 
     @classmethod
     def load(cls, path: Union[str, Path]) -> "Bert":
@@ -205,18 +205,12 @@ class Bert(object):
         with tf.Session(graph=bert._graph) as session:
             bundle = tf.saved_model.load(session, ["serve"], str(path))
 
-        # Redownload source model tokenizer from tf-hub
-        with path.joinpath("assets", _SOURCE_MODEL_ASSET_FILE).open("r", encoding="UTF-8") as in_file:
-            tf_hub_url = in_file.readline().strip()
+        # Get tokenizer parameters
+        with path.joinpath("assets", _TOKENIZER_PARAMS_FILE).open("r", encoding="UTF-8") as in_file:
+            bert._do_lower_case = bool(in_file.readline().strip())
 
-        with tf.Session() as session:
-            # Download module from tf-hub
-            bert_module = hub.Module(tf_hub_url)
-
-            # Get the tokenizer from the module
-            tokenization_info = bert_module(signature="tokenization_info", as_dict=True)
-            vocab_file, do_lower_case = session.run([tokenization_info["vocab_file"], tokenization_info["do_lower_case"]])
-            bert._tokenizer = FullTokenizer(vocab_file=vocab_file, do_lower_case=do_lower_case)
+        bert._vocab_file = str(path.joinpath("assets", _VOCAB_FILE))
+        bert._tokenizer = FullTokenizer(vocab_file=bert._vocab_file, do_lower_case=bert._do_lower_case)
 
         # Initialize inputs/outputs for use in bert.embed
         bert._input_ids = bert._graph.get_tensor_by_name(bundle.signature_def["serving_default"].inputs["input_ids"].name)
