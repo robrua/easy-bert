@@ -66,4 +66,4 @@ easy-bert also provides a CLI tool to conveniently do one-off embeddings of sequ
 Run `bert --help`, `bert embed --help` or `bert download --help` to get details about the CLI tool.
 
 # Docker
-easy-bert comes with a [docker build](https://cloud.docker.com/repository/docker/robrua/easy-bert) that can be used as a base image for applications that rely on bert embeddings or to just run the CLI tool without needing to install an environment.
+easy-bert comes with a [docker build](https://hub.docker.com/r/robrua/easy-bert) that can be used as a base image for applications that rely on bert embeddings or to just run the CLI tool without needing to install an environment.
