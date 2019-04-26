@@ -50,6 +50,16 @@ FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 MAINTAINER Rob Rua <robertrua@gmail.com>
 
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+
+# Anaconda home setup
+ENV CONDA_HOME /opt/conda
+ENV PATH $CONDA_HOME/bin:$PATH
+
+
 COPY --from=build $CONDA_HOME $CONDA_HOME
 
 

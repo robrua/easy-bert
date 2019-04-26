@@ -7,14 +7,14 @@ from setuptools import setup, find_packages
 
 install_requires = [
     "numpy",
-    "tensorflow-hub",
-    "bert-tensorflow",
+    "tensorflow-hub==0.4.0",
+    "bert-tensorflow==1.0.1",
     "click"
 ]
 
 # Hacky check for whether CUDA is installed
 has_cuda = any("CUDA" in name.split("_") for name in os.environ.keys())
-install_requires.append("tensorflow-gpu" if has_cuda else "tensorflow")
+install_requires.append("tensorflow-gpu==1.13.1" if has_cuda else "tensorflow==1.13.1")
 
 version_file = Path(__file__).parent.joinpath("easybert", "VERSION.txt")
 version = version_file.read_text(encoding="UTF-8").strip()

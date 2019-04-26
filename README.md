@@ -1,7 +1,7 @@
-[![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/robrua/bert/blob/master/LICENSE.txt)
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/robrua/easy-bert/blob/master/LICENSE.txt)
 
 # easy-bert
-easy-bert is a dead simple API for using Google's high quality BERT language model (https://github.com/google-research/bert).
+easy-bert is a dead simple API for using Google's high quality [BERT](https://github.com/google-research/bert) language model.
 
 Currently, easy-bert is focused on getting embeddings from pre-trained BERT models. Support for fine-tuning and pre-training will be added in the future, as well as support for using easy-bert for other tasks besides getting embeddings.
 
@@ -63,3 +63,6 @@ bert = Bert.load("/path/to/your/model/")
 easy-bert also provides a CLI tool to conveniently do one-off embeddings of sequences with BERT. It can also convert a TensorFlow Hub model to a saved model.
 
 Run `bert --help`, `bert embed --help` or `bert download --help` to get details about the CLI tool.
+
+# Docker
+easy-bert comes with a [docker build](https://cloud.docker.com/repository/docker/robrua/easy-bert) that can be used as a base image for applications that rely on bert embeddings or to just run the CLI tool without needing to install an environment.

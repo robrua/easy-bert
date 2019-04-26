@@ -1,4 +1,4 @@
-FROM ubuntu18.04 as build
+FROM ubuntu:18.04 as build
 
 
 MAINTAINER Rob Rua <robertrua@gmail.com>
@@ -44,10 +44,20 @@ RUN python setup.py install
 
 
 # Use multi-stage build to minimize image size
-FROM ubuntu18.04
+FROM ubuntu:18.04
 
 
 MAINTAINER Rob Rua <robertrua@gmail.com>
+
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+
+# Anaconda home setup
+ENV CONDA_HOME /opt/conda
+ENV PATH $CONDA_HOME/bin:$PATH
 
 
 COPY --from=build $CONDA_HOME $CONDA_HOME
