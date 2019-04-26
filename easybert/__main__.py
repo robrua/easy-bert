@@ -130,16 +130,18 @@ def _embed(sequence: str = None,
 @click.option("-m", "--model", required=True, type=str, help="the path to save the BERT model to")
 @click.option("-h", "--hub-model", default=_DEFAULT_HUB_MODEL, help="the url to the TensorFlow Hub BERT model to use", show_default=True)
 @click.option("-l", "--max-sequence-length", default=_DEFAULT_MAX_SEQUENCE_LENGTH, help="the max sequence length that the model should allow", show_default=True)
+@click.option("-o/-s", "--overwrite/--safe", default=False, help="whether to overwrite the model directory if there's already a file or directory ther  [default: safe]", show_default=False)
 @click.option("-g/-c", "--gpu/--cpu", default=_DEFAULT_GPU, help="whether to use the gpu  [default: {}]".format("gpu" if _DEFAULT_GPU else "cpu"), show_default=False)
 @click.option("-v/-q", "--verbose/--quiet", default=_DEFAULT_VERBOSE, help="whether to log verbose TensorFlow output  [default: {}]".format("verbose" if _DEFAULT_VERBOSE else "quiet"), show_default=False)
 def _download(model: str,
               hub_model: str = _DEFAULT_HUB_MODEL,
               max_sequence_length: int = _DEFAULT_MAX_SEQUENCE_LENGTH,
+              overwrite: bool = False,
               gpu: bool = _DEFAULT_GPU,
               verbose: bool = _DEFAULT_VERBOSE) -> None:
     with _errors_only(not verbose), _gpu(gpu):
         bert = Bert(tf_hub_url=hub_model, max_sequence_length=max_sequence_length)
-        bert.save(model)
+        bert.save(path=model, overwrite=overwrite)
 
 
 if __name__ == "__main__":

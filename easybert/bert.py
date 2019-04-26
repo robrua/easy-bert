@@ -46,6 +46,7 @@ bert = Bert.load("/path/to/your/model/")
 from typing import Union, Iterable
 from types import TracebackType
 from pathlib import Path
+import json
 
 from bert.tokenization import FullTokenizer
 from bert import run_classifier
@@ -56,7 +57,7 @@ import numpy as np
 
 _DEFAULT_MAX_SEQUENCE_LENGTH = 128  # Max number of BERT tokens in a sequence
 _DEFAULT_PER_TOKEN_EMBEDDING = False  # Whether to return per-token embeddings or pooled embeddings for the full sequences
-_TOKENIZER_PARAMS_FILE = "tokenizer.txt"  # The asset file in the saved model used to store the parameters for the tokenizer
+_MODEL_DETAILS = "model.json"  # The asset file in the saved model used to store parameters for serving in other languages
 _VOCAB_FILE = "vocab.txt"  # The asset file in the saved model that stores the vocabulary for the tokenizer
 
 
@@ -80,6 +81,8 @@ class Bert(object):
             # Get the tokenizer from the module
             tokenization_info = bert_module(signature="tokenization_info", as_dict=True)
             self._vocab_file, self._do_lower_case = session.run([tokenization_info["vocab_file"], tokenization_info["do_lower_case"]])
+            self._vocab_file = self._vocab_file.decode("UTF-8")
+            self._do_lower_case = bool(self._do_lower_case)
             self._tokenizer = FullTokenizer(vocab_file=self._vocab_file, do_lower_case=self._do_lower_case)
 
             # Create symbolic input tensors as inputs to the model
@@ -147,7 +150,7 @@ class Bert(object):
             output = output.reshape(output.shape[1:])
         return output
 
-    def save(self, path: Union[str, Path], overwrite: bool = True) -> None:
+    def save(self, path: Union[str, Path], overwrite: bool = False) -> None:
         """
         Saves the BERT model to a directory as a TensorFlow saved model
 
@@ -179,9 +182,16 @@ class Bert(object):
                     "segment_ids": self._segment_ids
                 }, outputs=self._outputs)
 
-        # Save needed information to get the tokenizer when reloading
-        with path.joinpath("assets", _TOKENIZER_PARAMS_FILE).open("w", encoding="UTF-8") as out_file:
-            out_file.write("{}\n".format(self._do_lower_case))
+        # Save needed information to get the tokenizer and load models in other languages
+        with path.joinpath("assets", _MODEL_DETAILS).open("w", encoding="UTF-8") as out_file:
+            json.dump({
+                "doLowerCase": self._do_lower_case,
+                "inputIds": self._input_ids.name,
+                "inputMask": self._input_mask.name,
+                "segmentIds": self._segment_ids.name,
+                "pooledOutput": self._outputs["pooled_output"].name,
+                "sequenceOutput": self._outputs["sequence_output"].name
+            }, out_file)
 
     @classmethod
     def load(cls, path: Union[str, Path]) -> "Bert":
@@ -206,10 +216,11 @@ class Bert(object):
             bundle = tf.saved_model.load(session, ["serve"], str(path))
 
         # Get tokenizer parameters
-        with path.joinpath("assets", _TOKENIZER_PARAMS_FILE).open("r", encoding="UTF-8") as in_file:
-            bert._do_lower_case = bool(in_file.readline().strip())
+        with path.joinpath("assets", _MODEL_DETAILS).open("r", encoding="UTF-8") as in_file:
+            details = json.load(in_file)
 
         bert._vocab_file = str(path.joinpath("assets", _VOCAB_FILE))
+        bert._do_lower_case = details["doLowerCase"]
         bert._tokenizer = FullTokenizer(vocab_file=bert._vocab_file, do_lower_case=bert._do_lower_case)
 
         # Initialize inputs/outputs for use in bert.embed
