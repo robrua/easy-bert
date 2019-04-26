@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.robrua.nlp</groupId>
+	<artifactId>easy-bert</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>easy-bert</name>
+	<description>A Dead Simple BERT API (https://github.com/google-research/bert)</description>
+	<url>https://github.com/robrua/easy-bert</url>
+
+	<developers>
+		<developer>
+			<id>robrua</id>
+			<name>Rob Rua</name>
+			<email>robertrua@gmail.com</email>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git@github.com:robrua/easy-bert.git</connection>
+		<developerConnection>scm:git:git@github.com:robrua/easy-bert.git</developerConnection>
+		<url>git@github.com:robrua/easy-bert.git</url>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-resources.version>3.1.0</maven-resources.version>
+		<maven-deploy.version>2.8.2</maven-deploy.version>
+		<exec-maven.version>1.6.0</exec-maven.version>
+		<dockerfile-maven.version>1.4.10</dockerfile-maven.version>
+
+		<docker.image>robrua/easy-bert</docker.image>
+		<docker.tag>latest</docker.tag>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy.version}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${exec-maven.version}</version>
+				<executions>
+					<execution>
+						<id>deploy</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>deploy</phase>
+						<configuration>
+							<executable>python</executable>
+							<arguments>
+								<argument>setup.py</argument>
+								<argument>sdist</argument>
+								<argument>upload</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${maven-resources.version}</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<outputDirectory>${basedir}</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${docker.directory}</directory>
+									<includes>
+										<include>Dockerfile</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<version>${dockerfile-maven.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>build</goal>
+									<goal>push</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<repository>${docker.image}</repository>
+							<tag>${docker.tag}</tag>
+							<pullNewerImage>false</pullNewerImage>
+							<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>cpu</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<docker.tag>cpu</docker.tag>
+				<docker.directory>docker/cpu</docker.directory>
+			</properties>
+		</profile>
+		<profile>
+			<id>gpu</id>
+			<properties>
+				<docker.tag>gpu</docker.tag>
+				<docker.directory>docker/gpu</docker.directory>
+			</properties>
+		</profile>
+	</profiles>
+</project>

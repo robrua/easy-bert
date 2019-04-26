@@ -1,0 +1,6 @@
+flake8
+numpy
+tensorflow-gpu
+tensorflow-hub
+bert-tensorflow
+click
