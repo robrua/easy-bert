@@ -40,6 +40,7 @@ ADD requirements-gpu.txt /opt/easy-bert/requirements.txt
 ADD setup.py /opt/easy-bert/setup.py
 
 WORKDIR /opt/easy-bert
+RUN pip install -r requirements.txt
 RUN python setup.py install
 
 
