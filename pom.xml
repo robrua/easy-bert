@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.robrua.nlp</groupId>
 	<artifactId>easy-bert</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
 
 	<name>easy-bert</name>
 	<description>A Dead Simple BERT API (https://github.com/google-research/bert)</description>
@@ -33,69 +34,95 @@
 		<url>git@github.com:robrua/easy-bert.git</url>
 	</scm>
 
+	<repositories>
+		<repository>
+			<id>snapshots-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-compiler.version>3.8.0</maven-compiler.version>
+		<maven-source.version>3.0.1</maven-source.version>
+		<maven-javadoc.version>3.1.0</maven-javadoc.version>
 		<maven-resources.version>3.1.0</maven-resources.version>
 		<maven-install.version>2.5.2</maven-install.version>
 		<maven-deploy.version>2.8.2</maven-deploy.version>
 		<exec-maven.version>1.6.0</exec-maven.version>
 		<dockerfile-maven.version>1.4.10</dockerfile-maven.version>
+		<maven-gpg.version>1.6</maven-gpg.version>
+		<nexus-maven.version>1.6.8</nexus-maven.version>
+		<license-maven.plugin>1.20</license-maven.plugin>
+		<maven-shade.version>3.2.1</maven-shade.version>
+
+		<jackson.version>2.9.8</jackson.version>
+		<guava.version>27.1-jre</guava.version>
+		<tensorflow.version>1.13.1</tensorflow.version>
 
 		<docker.image>robrua/easy-bert</docker.image>
-		<docker.tag>latest</docker.tag>
+		<docker.tag>cpu</docker.tag>
+		<docker.directory>docker/cpu</docker.directory>
 	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tensorflow</groupId>
+			<artifactId>tensorflow</artifactId>
+			<version>${tensorflow.version}</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>${maven-install.version}</version>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler.version}</version>
 				<configuration>
-					<skip>true</skip>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>${maven-deploy.version}</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>${exec-maven.version}</version>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source.version}</version>
 				<executions>
 					<execution>
-						<id>install</id>
+						<id>attach-sources</id>
+						<phase>verify</phase>
 						<goals>
-							<goal>exec</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
-						<phase>install</phase>
-						<configuration>
-							<executable>python</executable>
-							<arguments>
-								<argument>setup.py</argument>
-								<argument>install</argument>
-							</arguments>
-						</configuration>
 					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc.version}</version>
+				<executions>
 					<execution>
-						<id>deploy</id>
+						<id>attach-javadocs</id>
+						<phase>verify</phase>
 						<goals>
-							<goal>exec</goal>
+							<goal>jar</goal>
 						</goals>
-						<phase>deploy</phase>
-						<configuration>
-							<executable>python</executable>
-							<arguments>
-								<argument>setup.py</argument>
-								<argument>sdist</argument>
-								<argument>upload</argument>
-							</arguments>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -103,6 +130,147 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>release</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg.version}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>${nexus-maven.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>shaded</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>${license-maven.version}</version>
+						<configuration>
+							<excludedScopes>system,test</excludedScopes>
+						</configuration>
+						<executions>
+							<execution>
+								<id>add-third-party</id>
+								<goals>
+									<goal>add-third-party</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>${maven-shade.version}</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<finalName>${project.build.finalName}-jar-with-dependencies</finalName>
+									<minimizeJar>true</minimizeJar>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>python</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-install-plugin</artifactId>
+						<version>${maven-install.version}</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>${maven-deploy.version}</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>${exec-maven.version}</version>
+						<executions>
+							<execution>
+								<id>install</id>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<phase>install</phase>
+								<configuration>
+									<executable>python</executable>
+									<arguments>
+										<argument>setup.py</argument>
+										<argument>install</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>deploy</id>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<phase>deploy</phase>
+								<configuration>
+									<executable>python</executable>
+									<arguments>
+										<argument>setup.py</argument>
+										<argument>sdist</argument>
+										<argument>upload</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>docker</id>
 			<build>
@@ -163,21 +331,23 @@
 			</build>
 		</profile>
 		<profile>
-			<id>cpu</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<docker.tag>cpu</docker.tag>
-				<docker.directory>docker/cpu</docker.directory>
-			</properties>
-		</profile>
-		<profile>
 			<id>gpu</id>
 			<properties>
 				<docker.tag>gpu</docker.tag>
 				<docker.directory>docker/gpu</docker.directory>
 			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.tensorflow</groupId>
+					<artifactId>libtensorflow</artifactId>
+					<version>${tensorflow.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>org.tensorflow</groupId>
+					<artifactId>libtensorflow_jni_gpu</artifactId>
+					<version>${tensorflow.version}</version>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 </project>

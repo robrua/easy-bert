@@ -190,7 +190,8 @@ class Bert(object):
                 "inputMask": self._input_mask.name,
                 "segmentIds": self._segment_ids.name,
                 "pooledOutput": self._outputs["pooled_output"].name,
-                "sequenceOutput": self._outputs["sequence_output"].name
+                "sequenceOutput": self._outputs["sequence_output"].name,
+                "maxSequenceLength": int(self._input_ids.shape[1])
             }, out_file)
 
     @classmethod
