@@ -36,6 +36,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-resources.version>3.1.0</maven-resources.version>
+		<maven-install.version>2.5.2</maven-install.version>
 		<maven-deploy.version>2.8.2</maven-deploy.version>
 		<exec-maven.version>1.6.0</exec-maven.version>
 		<dockerfile-maven.version>1.4.10</dockerfile-maven.version>
@@ -46,6 +47,14 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${maven-install.version}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -59,6 +68,20 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>${exec-maven.version}</version>
 				<executions>
+					<execution>
+						<id>install</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>install</phase>
+						<configuration>
+							<executable>python</executable>
+							<arguments>
+								<argument>setup.py</argument>
+								<argument>install</argument>
+							</arguments>
+						</configuration>
+					</execution>
 					<execution>
 						<id>deploy</id>
 						<goals>
@@ -115,8 +138,16 @@
 						<version>${dockerfile-maven.version}</version>
 						<executions>
 							<execution>
+								<id>build</id>
+								<phase>package</phase>
 								<goals>
 									<goal>build</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>push</id>
+								<phase>deploy</phase>
+								<goals>
 									<goal>push</goal>
 								</goals>
 							</execution>

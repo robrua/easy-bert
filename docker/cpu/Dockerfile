@@ -34,13 +34,14 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86
 
 
 # Install easy-bert
+ADD requirements.txt /opt/easy-bert/requirements.txt
+RUN pip install -r /opt/easy-bert/requirements.txt
+
 ADD easybert /opt/easy-bert/easybert
 ADD MANIFEST.in /opt/easy-bert/MANIFEST.in
-ADD requirements.txt /opt/easy-bert/requirements.txt
 ADD setup.py /opt/easy-bert/setup.py
 
 WORKDIR /opt/easy-bert
-RUN pip install -r requirements.txt
 RUN python setup.py install
 
 
