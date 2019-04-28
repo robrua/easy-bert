@@ -1,7 +1,7 @@
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/robrua/easy-bert/blob/master/LICENSE.txt)
 [![PyPI](https://img.shields.io/pypi/v/easybert.svg)](https://pypi.org/project/easybert/)
 [![Maven Central](https://img.shields.io/maven-central/v/com.robrua.nlp/easy-bert.svg)](https://search.maven.org/search?q=g:com.robrua.nlp%20a:easy-bert)
-[![JavaDocs](http://javadoc.io/badge/com.robrua.nlp/easy-bert.svg)](http://javadoc.io/doc/com.robrua.nlp/easybert)
+[![JavaDocs](http://javadoc.io/badge/com.robrua.nlp/easy-bert.svg)](http://javadoc.io/doc/com.robrua.nlp/easy-bert)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2651822.svg)](https://doi.org/10.5281/zenodo.2651822)
 
 # easy-bert
