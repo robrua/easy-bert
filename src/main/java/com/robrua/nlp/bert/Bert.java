@@ -31,8 +31,8 @@ import com.google.common.io.Resources;
  * <br>
  * <p>
  * To load a model from your local filesystem, you can use:
+ * 
  * <blockquote>
- *
  * <pre>
  * {@code
  * try(Bert bert = Bert.load(new File("/path/to/your/model/"))) {
@@ -40,11 +40,11 @@ import com.google.common.io.Resources;
  * }
  * }
  * </pre>
- *
  * </blockquote>
+ * 
  * If the model is on your classpath (e.g. if you're pulling it in via Maven), you can use:
+ * 
  * <blockquote>
- *
  * <pre>
  * {@code
  * try(Bert bert = Bert.load("/resource/path/to/your/model/")) {
@@ -52,8 +52,8 @@ import com.google.common.io.Resources;
  * }
  * }
  * </pre>
- *
  * </blockquote>
+ * 
  * See <a href="https://github.com/robrua/easy-bert">the easy-bert GitHub Repository</a> for information about model available via Maven Central.
  * <br>
  * <br>
@@ -61,29 +61,26 @@ import com.google.common.io.Resources;
  * Once you have a BERT model loaded, you can get sequence embeddings using {@link com.robrua.nlp.bert.Bert#embedSequence(String)},
  * {@link com.robrua.nlp.bert.Bert#embedSequences(String...)}, {@link com.robrua.nlp.bert.Bert#embedSequences(Iterable)}, or
  * {@link com.robrua.nlp.bert.Bert#embedSequences(Iterator)}:
+ * 
  * <blockquote>
- *
  * <pre>
- * {
- *     &#64;code
- *     float[] embedding = bert.embedSequence("A sequence");
- *     float[][] embeddings = bert.embedSequence("Multiple", "Sequences");
+ * {@code
+ * float[] embedding = bert.embedSequence("A sequence");
+ * float[][] embeddings = bert.embedSequence("Multiple", "Sequences");
  * }
  * </pre>
- *
  * </blockquote>
+ * 
  * If you want per-token embeddings, you can use {@link com.robrua.nlp.bert.Bert#embedTokens(String)}, {@link com.robrua.nlp.bert.Bert#embedTokens(String...)},
  * {@link com.robrua.nlp.bert.Bert#embedTokens(Iterable)}, or {@link com.robrua.nlp.bert.Bert#embedTokens(Iterator)}:
- * <blockquote>
  *
+ * <blockquote>
  * <pre>
- * {
- *     &#64;code
- *     float[][] embedding = bert.embedTokens("A sequence");
- *     float[][][] embeddings = bert.embedTokens("Multiple", "Sequences");
+ * {@code
+ * float[][] embedding = bert.embedTokens("A sequence");
+ * float[][][] embeddings = bert.embedTokens("Multiple", "Sequences");
  * }
  * </pre>
- *
  * </blockquote>
  *
  * @author Rob Rua (https://github.com/robrua)
