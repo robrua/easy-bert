@@ -7,6 +7,18 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 
+/**
+ * A port of the BERT BasicTokenizer in the <a href="https://github.com/google-research/bert">BERT GitHub Repository</a>.
+ *
+ * The BasicTokenizer is used to segment input sequences into linguistic tokens, which in most cases are words. These tokens can be fed to the
+ * {@link com.robrua.nlp.bert.WordpieceTokenizer} to further segment them into the BERT tokens that are used for input into the model.
+ *
+ * @author Rob Rua (https://github.com/robrua)
+ * @version 1.0.3
+ * @since 1.0.3
+ *
+ * @see <a href="https://github.com/google-research/bert/blob/master/tokenization.py">The Python tokenization code this is ported from</a>
+ */
 public class BasicTokenizer extends Tokenizer {
     private static final Set<Integer> CONTROL_CATEGORIES = ImmutableSet.of((int)Character.CONTROL,
         (int)Character.FORMAT,
@@ -105,6 +117,13 @@ public class BasicTokenizer extends Tokenizer {
 
     private final boolean doLowerCase;
 
+    /**
+     * Creates a BERT {@link com.robrua.nlp.bert.BasicTokenizer}
+     *
+     * @param doLowerCase
+     *        whether to convert sequences to lower case during tokenization
+     * @since 1.0.3
+     */
     public BasicTokenizer(final boolean doLowerCase) {
         this.doLowerCase = doLowerCase;
     }

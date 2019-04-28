@@ -4,6 +4,18 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
+/**
+ * A port of the BERT WordpieceTokenizer in the <a href="https://github.com/google-research/bert">BERT GitHub Repository</a>.
+ *
+ * The WordpieceTokenizer processes tokens from the {@link com.robrua.nlp.bert.BasicTokenizer} into sub-tokens - parts of words that compose BERT's vocabulary.
+ * These tokens can then be converted into the inputIds that the BERT model accepts.
+ *
+ * @author Rob Rua (https://github.com/robrua)
+ * @version 1.0.3
+ * @since 1.0.3
+ *
+ * @see <a href="https://github.com/google-research/bert/blob/master/tokenization.py">The Python tokenization code this is ported from</a>
+ */
 public class WordpieceTokenizer extends Tokenizer {
     private static final int DEFAULT_MAX_CHARACTERS_PER_WORD = 200;
     private static final String DEFAULT_UNKNOWN_TOKEN = "[UNK]";
@@ -12,16 +24,34 @@ public class WordpieceTokenizer extends Tokenizer {
     private final String unknownToken;
     private final Map<String, Integer> vocabulary;
 
+    /**
+     * Creates a BERT {@link com.robrua.nlp.bert.WordpieceTokenizer}
+     *
+     * @param vocabulary
+     *        a mapping from sub-tokens in the BERT vocabulary to their inputIds
+     * @since 1.0.3
+     */
     public WordpieceTokenizer(final Map<String, Integer> vocabulary) {
         this.vocabulary = vocabulary;
         unknownToken = DEFAULT_UNKNOWN_TOKEN;
         maxCharactersPerWord = DEFAULT_MAX_CHARACTERS_PER_WORD;
     }
 
-    public WordpieceTokenizer(final Map<String, Integer> vocabulary, final String unknownToken, final int maxCharactersPerWord) {
+    /**
+     * Creates a BERT {@link com.robrua.nlp.bert.WordpieceTokenizer}
+     *
+     * @param vocabulary
+     *        a mapping from sub-tokens in the BERT vocabulary to their inputIds
+     * @param unknownToken
+     *        the sub-token to use when an unrecognized or too-long token is encountered
+     * @param maxCharactersPerToken
+     *        the maximum number of characters allowed in a token to be sub-tokenized
+     * @since 1.0.3
+     */
+    public WordpieceTokenizer(final Map<String, Integer> vocabulary, final String unknownToken, final int maxCharactersPerToken) {
         this.vocabulary = vocabulary;
         this.unknownToken = unknownToken;
-        this.maxCharactersPerWord = maxCharactersPerWord;
+        maxCharactersPerWord = maxCharactersPerToken;
     }
 
     private Stream<String> splitToken(final String token) {
