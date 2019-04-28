@@ -144,25 +144,32 @@ float[][][] embeddings = bert.embedTokens("Multiple", "Sequences");
 ```
 
 ### Pre-Generated Maven Central Models
-Currently, only the `bert_multi_cased_L-12_H-768_A-12` model is available on [Maven Central](https://search.maven.org/search?q=g:com.robrua.nlp.models%20a:easy-bert-multi-cased-L-12-H-768-A-12). To use it in your project, add the following to your `pom.xml`:
+Various TensorFlow Hub BERT models are available in easy-bert format on [Maven Central](https://search.maven.org/search?q=g:com.robrua.nlp.models). The use one in your project, add the following to your `pom.xml`, substituting one of the Artifact IDs listed below in place of `ARTIFACT-ID` in the `artifactId`:
 
 ```xml
 <dependencies>
   <dependency>
     <groupId>com.robrua.nlp.models</groupId>
-    <artifactId>easy-bert-multi-cased-L-12-H-768-A-12</artifactId>
+    <artifactId>ARTIFACT-ID</artifactId>
     <version>1.0.0</version>
   </dependency>
 </dependencies>
 ```
 
-Then you can load the model using:
+Once you've pulled in the dependency, you can load the model using this code. Substitute the appropriate Resource Path from the list below in place of `RESOURCE-PATH` based on the model you added as a dependency:
 
 ```java
-try(Bert bert = Bert.load("com/robrua/nlp/easy-bert/bert-multi-cased-L-12-H-768-A-12")) {
+try(Bert bert = Bert.load("RESOURCE-PATH")) {
     // Embed some sequences
 }
 ```
+
+#### Available Models
+| Model | Languages | Layers | Embedding Size | Heads | Parameters | Artifact ID | Resource Path |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| [BERT-Base, Multilingual Cased](https://tfhub.dev/google/bert_multi_cased_L-12_H-768_A-12/1) | 104 | 12 | 768 | 12 | 110M | easy-bert-multi-cased-L-12-H-768-A-12 [![Maven Central](https://img.shields.io/maven-central/v/com.robrua.nlp.models/easy-bert-multi-cased-L-12-H-768-A-12.svg)](https://search.maven.org/search?q=g:com.robrua.nlp.models%20a:easy-bert-multi-cased-L-12-H-768-A-12) | com/robrua/nlp/easy-bert/bert-multi-cased-L-12-H-768-A-12 |
+| [BERT-Base, Cased](https://tfhub.dev/google/bert_cased_L-12_H-768_A-12/1) | English | 12 | 768 | 12 | 110M | easy-bert-cased-L-12-H-768-A-12 [![Maven Central](https://img.shields.io/maven-central/v/com.robrua.nlp.models/easy-bert-cased-L-12-H-768-A-12.svg)](https://search.maven.org/search?q=g:com.robrua.nlp.models%20a:easy-bert-cased-L-12-H-768-A-12) | com/robrua/nlp/easy-bert/bert-cased-L-12-H-768-A-12 |
+| [BERT-Base, Uncased](https://tfhub.dev/google/bert_uncased_L-12_H-768_A-12/1) | English | 12 | 768 | 12 | 110M | easy-bert-uncased-L-12-H-768-A-12 [![Maven Central](https://img.shields.io/maven-central/v/com.robrua.nlp.models/easy-bert-uncased-L-12-H-768-A-12.svg)](https://search.maven.org/search?q=g:com.robrua.nlp.models%20a:easy-bert-uncased-L-12-H-768-A-12) | com/robrua/nlp/easy-bert/bert-uncased-L-12-H-768-A-12 |
 
 ### Creating Your Own Models
 For now, easy-bert can only use pre-trained TensorFlow Hub BERT models that have been converted using the Python tools. We will be adding support for fine-tuning and pre-training new models easily, but there are no plans to support these on the Java side. You'll need to train in Python, save the model, then load it in Java.
