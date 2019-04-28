@@ -144,7 +144,7 @@ float[][][] embeddings = bert.embedTokens("Multiple", "Sequences");
 ```
 
 ### Pre-Generated Maven Central Models
-Various TensorFlow Hub BERT models are available in easy-bert format on [Maven Central](https://search.maven.org/search?q=g:com.robrua.nlp.models). The use one in your project, add the following to your `pom.xml`, substituting one of the Artifact IDs listed below in place of `ARTIFACT-ID` in the `artifactId`:
+Various TensorFlow Hub BERT models are available in easy-bert format on [Maven Central](https://search.maven.org/search?q=g:com.robrua.nlp.models). To use one in your project, add the following to your `pom.xml`, substituting one of the Artifact IDs listed below in place of `ARTIFACT-ID` in the `artifactId`:
 
 ```xml
 <dependencies>
