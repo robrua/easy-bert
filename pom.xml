@@ -6,7 +6,7 @@
 
 	<groupId>com.robrua.nlp</groupId>
 	<artifactId>easy-bert</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
 
 	<name>easy-bert</name>
 	<description>A Dead Simple BERT API (https://github.com/google-research/bert)</description>
