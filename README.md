@@ -20,14 +20,14 @@ You can use easy-bert with pre-trained BERT models from TensorFlow Hub or from l
 To create a BERT embedder from a TensowFlow Hub model, simply instantiate a Bert object with the target tf-hub URL:
 
 ```python
-from easybert import bert
+from easybert import Bert
 bert = Bert("https://tfhub.dev/google/bert_multi_cased_L-12_H-768_A-12/1")
 ```
 
 You can also load a local model in TensorFlow's saved model format using `Bert.load`:
 
 ```python
-from easybert import bert
+from easybert import Bert
 bert = Bert.load("/path/to/your/model/")
 ```
 
