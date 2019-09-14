@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.robrua.nlp/easy-bert.svg)](https://search.maven.org/search?q=g:com.robrua.nlp%20a:easy-bert)
 [![JavaDocs](https://javadoc.io/badge/com.robrua.nlp/easy-bert.svg)](https://javadoc.io/doc/com.robrua.nlp/easy-bert)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2651822.svg)](https://doi.org/10.5281/zenodo.2651822)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frobrua%2Feasy-bert.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Frobrua%2Feasy-bert?ref=badge_shield)
 
 # easy-bert
 easy-bert is a dead simple API for using Google's high quality [BERT](https://github.com/google-research/bert) language model in Python and Java.
@@ -180,3 +181,7 @@ If you find bugs please let us know via a pull request or issue.
 
 ## Citing easy-bert
 If you used easy-bert for your research, please [cite the project](https://doi.org/10.5281/zenodo.2651822).
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frobrua%2Feasy-bert.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Frobrua%2Feasy-bert?ref=badge_large)
