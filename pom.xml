@@ -63,7 +63,7 @@
 		<maven-shade.version>3.2.1</maven-shade.version>
 
 		<jackson.version>2.10.0.pr3</jackson.version>
-		<guava.version>27.1-jre</guava.version>
+		<guava.version>29.0-jre</guava.version>
 		<tensorflow.version>1.13.1</tensorflow.version>
 
 		<docker.image>robrua/easy-bert</docker.image>
